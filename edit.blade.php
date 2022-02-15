@@ -137,11 +137,10 @@
                                             <tr>
                                                 <th>First Name</th>
                                                 <th>Second Name</th>
-                                                <th>User Code</th>
-
+                                                <th>Role</th>
+                                                <th>Email</th>
                                                 <th>Phone Number</th>
-                                                <th>Status</th>
-
+                                                <th>Address</th>
                                                 <th>Actions</th>
                                             </tr>
                                         </thead>
@@ -151,47 +150,43 @@
 
                                             @foreach ($data as $key => $user)
                                                 <tr>
-                                                    <td>{{ $user->firstname }}
+                                                    <td>{{ $user->firstName }}
                                                     </td>
                                                     <td>
-                                                        {{ $user->lastname }}
+                                                        {{ $user->lastName }}
                                                     </td>
                                                     <td>
 
-                                                        {{$user->usercode}}
+                                                        {{$user->roleName}}
                                                     </td>
 
-
+                                                    <td>{{ $user->email }}</td>
                                                     <td>{{ $user->phoneNumber }}</td>
-                                                    <td>
-                                                     @if ($user->status == 1)
-                                                        <p >Active</p>
-                                                         
-                                                     @else
-                                                           <div>
-                                                               <p>Inactive</p>
-                                                           </div>
-                                                     @endif
-                                                    </td>
 
-
+                                                    <td>{{ $user->address }}</td>
                                                     <td width="280px">
-                                                          @if($user->status ==1)
-                                                          <a class="btn btn-danger"
+                                                        @if (in_array("create-users", $per))
 
-                                                          href="{{route('actonpupil.act', ["id"=>$user->id, "status"=>0])}}">
-                                                          Deactivate</a>
-                                                          @else
-                                                          <a class="btn btn-info"
+                                                        <a class="btn btn-info"
 
-                                                          href="{{ route('actonpupil.act', ["id"=>$user->id, "status"=>1]) }}">
-                                                          Activate</a>
-                                                            @if($user->activation_request==1)
-                                                                <span class="badge badge-success">Requested Activation</span>
-                                                            @endif
-                                                          @endif
+                                                        href="{{ route('users.show', $user->staffId) }}">Show</a>
 
-                                                        
+                                                        @endif
+
+                                                        @if (in_array("edit-users", $per))
+
+                                                        <a class="btn btn-primary"
+                                                        href="{{ route('users.edit', $user->staffId) }}">Edit</a>
+                                                        @endif
+
+                                                     @if (in_array("delete-users", $per))
+
+                                                     {!! Form::open(['method' => 'DELETE', 'route' => ['users.destroy', $user->staffId], 'style' => 'display:inline']) !!}
+                                                     {!! Form::submit('Delete', ['class' => 'btn btn-danger']) !!}
+                                                     {!! Form::close() !!}
+
+                                                     @endif
+
 
                                                     </td>
                                                 </tr>
@@ -259,7 +254,7 @@
                 "responsive": true,
                 "lengthChange": false,
                 "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf"]
+                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
             $('#example2').DataTable({
                 "paging": true,

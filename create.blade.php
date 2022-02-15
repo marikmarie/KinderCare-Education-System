@@ -72,44 +72,36 @@
           <div class="register-box m-auto col-md-8">
             <div class="card card-outline card-success">
               <div class="card-header text-center">
-                <h2>Add Assignment</h2>
+                <h2>Add Pupil</h2>
               </div>
               <div class="card-body">
-                <p class="login-box-msg">Register a new Assignment</p>
+                <p class="login-box-msg">Register a new Pupil</p>
 
 
-                <form method="POST" action="{{route('assignment.store')}}">
+                <form method="POST" action="{{route('pupils.store')}}">
                     @csrf
                     <div class="form-group mb-3">
 
-                        <label for=""> Name</label>
-                        <input type="text" name="name" required placeholder="enter assignment  name" class="form-control"/>
+                        <label for="">First Name</label>
+                        <input type="text" name="fname" required placeholder="enter pupil first name" class="form-control"/>
                        </div>
                        <div class="form-group mb-3">
 
-                        <label for="">Assignment  Characters</label>
-
-                        <textarea name="characters"  required placeholder="enter assignment  characters" class="form-control" 
-                         maxlength="8"></textarea>
-                       </div>
-
-                       <div class="form-group mb-3">
-
-                         <label for="">Date of Attempt</label>
-                         <input type="date" name="dateOfAttempt" required placeholder="enter date of attempt" class="form-control"/>
+                         <label for="">Last Name</label>
+                         <input type="text" name="lname" required placeholder="enter pupil last name" class="form-control"/>
 
                         </div>
 
                         <div class="form-group mb-3">
 
-                         <label for="">Start Time</label>
-                         <input type="time" name="startTime" required placeholder="enter start time" class="form-control"/>
+                         <label for="">Phone Number</label>
+                         <input type="text" name="phone" required placeholder="enter phone number" class="form-control"/>
                         </div>
 
                         <div class="form-group mb-3">
 
-                         <label for="">End Time</label>
-                         <input type="time" name="endTime" required placeholder="enter end time" class="form-control"/>
+                         <label for="">User Code</label>
+                         <input type="text" name="code" required placeholder="enter pupil user code" class="form-control"/>
                         </div>
 
 
@@ -118,7 +110,7 @@
 
                          <!-- /.col -->
                          <div class="col-12">
-                           <button type="submit" class="btn  btn-block btn-primary btn-success">Add Assignment</button>
+                           <button type="submit" class="btn  btn-block btn-primary btn-success">Add Pupil</button>
                          </div>
                          <!-- /.col -->
                        </div>
