@@ -1,13 +1,12 @@
 #include<stdio.h>
 #include<mysql.h>
 #include<string.h>
-#include<conio.h>
 #include<stdlib.h>
 #include<dos.h>
 #include<time.h>
 MYSQL *getConnection();
-void header();
-void listCommands();
+void printWelcome();
+void availableCommands();
 void viewAll(MYSQL *, char *);
 //void checkStatus(MYSQL *, char *)
 void checkDates(MYSQL *con, char *, char *, char *);
@@ -58,7 +57,7 @@ int L[7][5] = {{1,0,0,0,0}, {1,0,0,0,0}, {1,0,0,0,0}, {1,0,0,0,0}, {1,0,0,0,0}, 
 
 int M[7][5] = {{1,0,0,0,1}, {1,1,0,1,1}, {1,0,1,0,1}, {1,0,0,0,1}, {1,0,0,0,1},  {1,0,0,0,1}, {1,0,0,0,1} };
 
-int N[7][5] = {{}, {}, {}, {}, {},  {}, {} };
+int N[7][5] = {{1,0,0,0,1}, {}, {}, {}, {},  {}, {1,0,0,0,1} };
 
 int O[7][5] = {{0,1,1,1,0}, {1,0,0,0,1}, {1,0,0,0,1}, {1,0,0,0,1}, {1,0,0,0,1},  {1,0,0,0,1}, {0,1,1,1,0} };
 
@@ -74,7 +73,7 @@ int T[7][5] = {{1,1,1,1,1}, {0,0,1,0,0}, {0,0,1,0,0}, {0,0,1,0,0}, {0,0,1,0,0}, 
 
 int U[7][5] = {{1,0,0,0,1}, {1,0,0,0,1}, {1,0,0,0,1}, {1,0,0,0,1}, {1,0,0,0,1},  {1,0,0,0,1}, {0,1,1,1,0} };
 
-int V[7][5] = {{}, {}, {}, {}, {},  {}, {} };
+int V[7][5] = {{1,0,0,0,1}, {}, {}, {}, {},  {}, {} };
 
 int W[7][5] = {{1,0,0,0,1}, {1,0,0,0,1}, {1,0,0,0,1}, {1,0,0,0,1}, {1,0,1,0,1},  {1,1,0,1,1}, {1,0,0,0,1} };
 
@@ -100,27 +99,23 @@ void main()
     char status[50];
     char phoneNumber[30];
     int loop = 1;
-    //startTime= clock();
-
 
     while (loop)
     {
-        //
-        // Get user information
-        header();
-        printf("\n\t Enter Usercode: ");
+        // Get user information..
+        printWelcome();
+        printf("\n \t Enter Usercode: ");
         scanf("%s", userCode);
 
-        // Connect to the database
+        // Connect to the database..
         con = mysql_init(NULL);
         con = getConnection();
 
-        // Login logic
+        // Login in the system..
         char query[255];
-
         sprintf(query, "SELECT * FROM pupil WHERE userCode='%s'", userCode);
 
-        // Run query and see, if it returns a non zero value, it means failure
+        // Run query and see, if it returns a non zero value, it means connection has failed..
         if (mysql_query(con, query) != 0)
         {
             printf("Query failed  with the following message:\n");
@@ -134,7 +129,7 @@ void main()
         int total = (int)mysql_num_rows(result);
         if (total == 0)
         {
-            printf("Wrong Username or Passcode\n");
+            printf("Wrong Usercode, retry!!\n");
         }
         else
         {
@@ -145,14 +140,13 @@ void main()
                 strcpy(userId, (char *)row[0]);
                 strcpy(firstName, (char *)row[1]);
                 strcpy(lastName, (char *)row[2]);
-                strcpy(status, (char *)row[7]);
+                //strcpy(status, (char *)row[5]);
             }
 
             printf("\nDate: %s \tWelcome, You are logged in as %s %s\n",date, firstName, lastName);
-            listCommands();
-            // printf("\n\tFull Name: %s %s\t Status: %s\n", , status);
-            // requestActivation(userId, con);
-            // printf("\n\n\n\n");
+
+            availableCommands();
+
             char command[255];
         cmd:
             printf("Enter Command:\t ");
@@ -175,7 +169,6 @@ void main()
                 char assinmentId[50];
                 scanf("%s", assinmentId);
                 viewAssignment(con, assinmentId, userId);
-                // Logic for attempting assignment
                 goto cmd;
             }
             else if (strncmp("Checkdates", command, 10) == 0)
@@ -206,19 +199,9 @@ void main()
             }
         }
     }
-    printf("Bye!!");
-    // printf("%d",howMany);
-    // gcc main.c  -o prog `mysql_config --cflags --libs`
-    // ./prog
+    printf("Re enter command please!!");
 }
-
-void requestActivation(char *userId, MYSQL *conn)
-{
-
-    char query[255];
-    sprintf(query, "UPDATE `pupil` SET `activation_request` = '1' WHERE `pupil`.`id` = '%s'", userId);
-    mysql_query(conn, query);
-}
+//getting connection to the database..
 MYSQL *getConnection()
 {
     MYSQL *con;
@@ -232,14 +215,20 @@ MYSQL *getConnection()
     }
     return con;
 }
+
+void requestActivation(char *userId, MYSQL *conn)
+{
+    char query[255];
+    sprintf(query, "UPDATE `pupil` SET `activation_request` = '1' WHERE `pupil`.`id` = '%s'", userId);
+    mysql_query(conn, query);
+}
+
 void viewAll(MYSQL *con, char *pupil_id)
 {
     MYSQL_ROW row;
     MYSQL_RES *result;
     MYSQL_RES *result1;
     char query[255];
-    // CAST("2017-08-29" AS DATE)
-    // GETDATE()
     strcpy(query, "SELECT * FROM assignments");
     mysql_query(con, query);
     result = mysql_store_result(con);
@@ -265,7 +254,8 @@ void viewAll(MYSQL *con, char *pupil_id)
         }
         count++;
     }
-    printf("\tSummary\n\t Total assignments:%d \n\tTotal Attempted: %d\n", count, attempted);
+    printf("\n_________________________________________________________________________________________________\n");
+    printf("\t\tSummary\n\t \tTotal assignments:%d \n\t\tTotal Attempted: %d\n", count, attempted);
     printf("\n------------------------------------------------------------------------------------------------\n");
 }
 void checkStatus(MYSQL *con, char *pupil_id){
@@ -274,7 +264,7 @@ void checkStatus(MYSQL *con, char *pupil_id){
     float totalMarks=0;
     int totalAssignments = 0;
     char query[255];
-    sprintf(query,"SELECT assignment_id,assignments.name,marks,marks.comment FROM pupil INNER JOIN marks ON pupil.id = marks.pupil_id INNER JOIN assignments ON assignments.id = marks.assignment_id WHERE pupil.id =14",pupil_id);
+    sprintf(query,"SELECT assignment_id,assignments.name,marks,marks.comment FROM pupil INNER JOIN marks ON pupil.id = marks.pupil_id INNER JOIN assignments ON assignments.id = marks.assignment_id WHERE pupil.id =%s",pupil_id);
     mysql_query(con,query);
     result = mysql_store_result(con);
     printf("\n%10s%20s\t%10s\t%s\n","ID","Assignment","Mark(/100%)","Comment");
@@ -282,7 +272,7 @@ void checkStatus(MYSQL *con, char *pupil_id){
             printf("\n%10s%20s\t%8s%2s\t%s\n\n",row[0],row[1],row[2],"%",row[3]);
             totalAssignments++;
     }
-    sprintf(query,"SELECT ROUND(AVG(marks),2) FROM pupil INNER JOIN marks ON pupil.id = marks.pupil_id INNER JOIN assignments ON assignments.id = marks.assignment_id WHERE pupil.id =14 GROUP BY pupil.id",pupil_id);
+    sprintf(query,"SELECT ROUND(AVG(marks),2) FROM pupil INNER JOIN marks ON pupil.id = marks.pupil_id INNER JOIN assignments ON assignments.id = marks.assignment_id WHERE pupil.id =%s GROUP BY pupil.id",pupil_id);
     mysql_query(con,query);
     result = mysql_store_result(con);
 
@@ -348,6 +338,7 @@ void viewAssignment(MYSQL *con, char *assignmentId, char *pupil_id)
     float totalGrade,avgGrade,totalTime;
     int pupilCharacters[8][7][5];
     int totalCharacters = 0;
+
     //Check if pupil is activated
     int available = 0;
     if(isActivated(con,pupil_id)){
@@ -357,7 +348,7 @@ void viewAssignment(MYSQL *con, char *assignmentId, char *pupil_id)
     printf("\n\n-------------------------------------------\n\n");
     //Check if pupil has at least attempted the assignment
     if(isAttempted(con,assignmentId,pupil_id)){
-        printf("\n\tIt seems you attempted this assignment\n\t That's all we know.\n ");
+        printf("\n\tIt seems you attempted this assignment\n\t .\n ");
         printf("\n\n-------------------------------------------\n\n");
         return;
     }
@@ -369,7 +360,7 @@ void viewAssignment(MYSQL *con, char *assignmentId, char *pupil_id)
 
         printf("\n\tId:\t %s \n",row[0]);
         printf("\n\tAssignment: %s\n",row[1]);
-        printf("\n\tCharacters: %d Character(s)",totalCharacters);
+        printf("\n\tCharacters: %d Character(s)\n",totalCharacters);
         printf("\n\tStart Date: %s\n",row[3]);
         printf("\n\tStart Time: %s\n",row[4]);
         printf("\n\tEnd Time: %s\n\n",row[5]);
@@ -382,21 +373,12 @@ void viewAssignment(MYSQL *con, char *assignmentId, char *pupil_id)
     return;
     }
 
-
     int choice;
     printf("\tEnter \n\t 1. To attempt\n\t 2. To Continue\n\t :");
     scanf("%d", &choice);
 
-        //timer(clock_t, starTime, endTime);
-
-
     if (choice == 1)
     {
-        /*clock_t startTotalTime = clock();
-    printf("%d\n\n\n",startTotalTime);
-        clock_t difference = clock() - before;
-        msec = difference * 1000 / CLOCKS_PER_SEC; */
-
         int columns = 5;
         int rows = 7;
         int i;
@@ -415,10 +397,6 @@ void viewAssignment(MYSQL *con, char *assignmentId, char *pupil_id)
                     printf("Cell [%d,%d]: ", i1 + 1, j + 1);
                     scanf("%d", &pupilCharacters[i][i1][j]);
 
-                    //clock_t stopTotalTime = clock();
-                    //int mseconds = (stopTotalTime - startTotalTime) * 1000 / CLOCKS_PER_SEC;
-                    //printf("\n**%d**\n", mseconds);
-
                 }
             }
             endTime = clock();
@@ -428,10 +406,8 @@ void viewAssignment(MYSQL *con, char *assignmentId, char *pupil_id)
             totalGrade += grades[i];
         }
         avgGrade = totalGrade/i;
-        //clock_t stopTotalTime = clock();
-       // int mseconds = (stopTotalTime - startTotalTime) * 1000 / CLOCKS_PER_SEC;
+        //Time taken..
         printf("Time taken : %d seconds\n\n ");
-       // printf("\nTotal Time taken: %d minutes %d seconds %d miliseconds\n", mseconds / (60 * 1000), mseconds / 1000, mseconds % 1000);
         printf("\n-------------------------------------------------------------------\n");
         printf("\n-------------------Attempt Summary------------------------------\n");
         for (int i = 0; i < totalCharacters; i++)
@@ -511,25 +487,38 @@ void compareCommand(char *command)
 }
 void printCharacter(int characterMatrix[][5])
 {
-    int columns = 5;
-    int rows = 7;
+    char draw[35];
 
-    for (int i = 0; i < rows; i++)
+    int i, j, k = 0;
+
+    for(i = 0; i < 7; i++)
     {
-        for (int j = 0; j < columns; j++)
+        for(j = 0; j < 5; j++)
         {
-            if (characterMatrix[i][j] == 0)
-            {
-                printf("%5s", "");
-            }
+            if(characterMatrix[i][j] == 1 )
+                draw[k++] = '*';
             else
-            {
-                printf("%5s", "*");
-            }
+                draw[k++] = ' ';
         }
-        printf("\n\n\n");
     }
+
+       printf(" ___ ___ ___ ___ ___\n");
+       printf("| %c | %c | %c | %c | %c |\n",draw[0],draw[1],draw[2],draw[3],draw[4] );
+       printf("|___|___|___|___|___|\n");
+       printf("| %c | %c | %c | %c | %c |\n",draw[5],draw[6],draw[7],draw[8],draw[9]);
+       printf("|___|___|___|___|___|\n");
+       printf("| %c | %c | %c | %c | %c |\n",draw[10],draw[11],draw[12],draw[13], draw[14]);
+       printf("|___|___|___|___|___|\n");
+       printf("| %c | %c | %c | %c | %c |\n",draw[15],draw[16],draw[17],draw[18], draw[19]);
+       printf("|___|___|___|___|___|\n");
+       printf("| %c | %c | %c | %c | %c |\n",draw[20],draw[21],draw[22],draw[23], draw[24]);
+       printf("|___|___|___|___|___|\n");
+       printf("| %c | %c | %c | %c | %c |\n",draw[25],draw[26],draw[27],draw[28], draw[29]);
+       printf("|___|___|___|___|___|\n");
+       printf("| %c | %c | %c | %c | %c |\n",draw[30],draw[31],draw[32],draw[33], draw[34]);
+       printf("|___|___|___|___|___|\n\n");
 }
+
 float attemptCharacter(char systemCharacter, int pupilCharacter[7][5])
 {
     switch (systemCharacter)
@@ -653,16 +642,14 @@ int isActivated(MYSQL*con, char *pupilId){
     else{
         return 0;
     }
-
 }
-void header()
+void printWelcome()
 {
-
     printf("\t\t\t***************************************************\n");
     printf("\t \t\t\tKINDERCARE CHARACTER DRAWING SYSTEM\t\n");
     printf("\t\t\t***************************************************\n");
 }
-void listCommands()
+void availableCommands()
 {
     printf("\nThe following are the available commands\n");
     printf("\n%20s\t%40s\n", "Command", "Function");
@@ -670,5 +657,6 @@ void listCommands()
     printf("\n%20s\t%40s\n", "Checkstatus", "To view a summary of your attempts, marks, average etc");
     printf("\n%20s\t%40s\n", "Viewassignment", "To see the details of assignment with the given id,enter assignment id.");
     printf("\n%20s\t%40s\n", "Checkdates", "Checkdates dateFrom dateTo To see assignments with in the dates");
-    printf("\n%20s\t%40s\n", "RequestActivation", "Request for activation from the teacher\n");
+    printf("\n%20s\t%40s\n", "RequestActivation", "Request for activation from the teacher");
+    printf("\n%20s\t%20s\n", "Logout", "Logout of the system\n");
 }
