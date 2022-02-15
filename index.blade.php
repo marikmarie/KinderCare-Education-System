@@ -95,17 +95,16 @@
 
             <!-- /.card -->
             <!-- Content Header (Page header) -->
-                         ___THE ASSIGNMENT PAGE
             <section class="content-header">
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1>Assigments</h1>
+                            <h1>Teachers</h1>
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
-                                <li class="breadcrumb-item"><a href="{{ route('assignment.index') }}">Home</a></li>
-                                <li class="breadcrumb-item active">Assigments</li>
+                                <li class="breadcrumb-item"><a href="{{ route('teachers.index') }}">Home</a></li>
+                                <li class="breadcrumb-item active">Teachers</li>
                             </ol>
                         </div>
                     </div>
@@ -124,11 +123,8 @@
 
                             <div class="card">
                                 <div class="card-header">
-                                    <h3 class="card-title ">Assigments</h3>
-                                    <h4 class="float-sm-right ">
-                                        <a class="btn btn-success" href="{{ route('assignment.create') }}"> Add New Assignment
-                                            </a>
-                                    </h4>
+                                    <h3 class="card-title ">Teachers</h3>
+                                    
                                 </div>
 
                                 <!--table removed-->
@@ -136,16 +132,8 @@
                                     <table id="example1" class="table table-bordered table-striped">
                                         <thead>
                                             <tr>
-                                                <th>AssignmentName</th>
-                                                <th>Date </th>
-                                                <th>Start Time</th>
-
-                                                <th>End Time</th>
-                                                <th>Characters</th>
-
-                                                <th>Assignment Due</th>
-                                                
-
+                                                <th>Name</th>
+                                                <th>Email</th>
 
                                             </tr>
                                         </thead>
@@ -158,30 +146,8 @@
                                                     <td>{{ $user->name }}
                                                     </td>
                                                     <td>
-                                                        {{ $user->dateOfAttempt}}
+                                                        {{ $user->email }}
                                                     </td>
-                                                    <td>
-
-                                                        {{$user->startTime}}
-                                                    </td>
-
-                                                    <td>
-                                                        {{$user->endTime}}
-                                                    </td>
-                                                    <td>{{$user->url}}</td>
-                                                       
-
-
-                                                    <td>
-                                                        
-                                                       @if ($user->assignmentDue == TRUE)
-                                                       Yes
-                                                  @else
-                                                       No
-                                                  @endif
-                                                    </td>
-
-
                                                 </tr>
                                             @endforeach
                                             <!--create a tr--->
