@@ -1,9 +1,5 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
-
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -58,12 +54,12 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1 class="m-0">Dashboard</h1>
+                            <h1 class="m-0">Attempts Summary For {{$assignmentName}}</h1>
                         </div><!-- /.col -->
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
                                 <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                <li class="breadcrumb-item active">Dashboard</li>
+                                <li class="breadcrumb-item active">Attempts</li>
                             </ol>
                         </div><!-- /.col -->
                     </div><!-- /.row -->
@@ -73,115 +69,7 @@
             <!-- Main content -->
             <section class="content">
                 <div class="container-fluid">
-                       <!--dummy data-->
-                       <div class="row">
-                        <div class="col-12 col-sm-6 col-md-3">
-                            <div class="info-box">
-                                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-tags"></i></span>
-
-                                <div class="info-box-content">
-                                    <span class="info-box-text">Total Pupils Who Attempted</span>
-                                    <span class="info-box-number">
-                                        {{$total_pupils_a}}
-
-                                    </span>
-                                </div>
-                                <!-- /.info-box-content -->
-                            </div>
-                            <!-- /.info-box -->
-                        </div>
-                        <!-- /.col -->
-                        <div class="col-12 col-sm-6 col-md-3">
-                            <div class="info-box mb-3">
-                                <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-sort-amount-up-alt"></i></span>
-
-                                <div class="info-box-content">
-                                    <span class="info-box-text">Total Pupils Who Did not Attempt</span>
-                                    <span class="info-box-number">{{$total_pupils - $total_pupils_a}}</span>
-                                </div>
-                                <!-- /.info-box-content -->
-                            </div>
-                            <!-- /.info-box -->
-                        </div>
-                        <!-- /.col -->
-
-
-
-
-
-                        <!-- fix for small devices only -->
-                        <div class="clearfix hidden-md-up"></div>
-
-                        <div class="col-12 col-sm-6 col-md-3">
-                            <div class="info-box mb-3">
-                                <span class="info-box-icon bg-success elevation-1"><i class="fas fa-handshake"></i></span>
-
-                                <div class="info-box-content">
-                                    <span class="info-box-text">Total Pupils Passed</span>
-                                    <span class="info-box-number">       {{$grading[0]}}</span>
-                                </div>
-                                <!-- /.info-box-content -->
-                            </div>
-                            <!-- /.info-box -->
-                        </div>
-                        <!-- /.col -->
-                        <div class="col-12 col-sm-6 col-md-3">
-                            <div class="info-box mb-3">
-                                <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-money-check"></i></span>
-
-                                <div class="info-box-content">
-                                    <span class="info-box-text">Total Pupils Failed</span>
-                                    <span class="info-box-number">{{$grading[1]}}</span>
-                                </div>
-                                <!-- /.info-box-content -->
-                            </div>
-                            <!-- /.info-box -->
-                        </div>
-                        <div class="col-12 col-sm-6 col-md-3">
-                            <div class="info-box mb-3">
-                                <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-money-check"></i></span>
-
-                                <div class="info-box-content">
-                                    <span class="info-box-text">% Passed</span>
-                                    <span class="info-box-number">{{$grading[2]}} %</span>
-                                </div>
-                                <!-- /.info-box-content -->
-                            </div>
-                            <!-- /.info-box -->
-                        </div>
-                        <div class="col-12 col-sm-6 col-md-3">
-                            <div class="info-box mb-3">
-                                <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-money-check"></i></span>
-
-                                <div class="info-box-content">
-                                    <span class="info-box-text">% Failed</span>
-                                    <span class="info-box-number">{{$grading[3]}} %</span>
-                                </div>
-                                <!-- /.info-box-content -->
-                            </div>
-                            <!-- /.info-box -->
-                        </div>
-
-                        <div class="col-12 col-sm-6 col-md-6">
-                            <div class="info-box mb-3">
-                                <div class="info-box-content">
-                                    <span class="info-box-text">Comments</span>
-                                      @if ($getcomment == NULL)
-                                            <a href="{{route('comments.create')}}">Add Comment</a>
-                                      @else
-                                            {{$getcomment}}
-                                      @endif
-                                </div>
-                                <!-- /.info-box-content -->
-                            </div>
-                            <!-- /.info-box -->
-                        </div>
-
-             </div>
                        
-
-                       <!--dummy data-->
-
                 <div class="row">
                         
                                 <!--table removed-->
@@ -189,13 +77,12 @@
                                     <table id="example1" class="table table-bordered table-striped">
                                         <thead>
                                             <tr>
-                                                <th>First Name</th>
-                                                <th>Second Name</th>
                                                 <th>User Code</th>
-
-                                                <th>Phone Number</th>
-                                                <th>Marks</th>
-
+                                                <th>First Name</th>
+                                                <th>Last Name</th>
+                                                <th>Mark(/100%)</th>
+                                                <th>Comment</th>
+                                                <th>Action</th>
 
                                             </tr>
                                         </thead>
@@ -203,27 +90,23 @@
 
                                             <!--create a tr--->
 
-                                            @foreach ($data as $key => $user)
+                                            @foreach ($pupils as $pupil)
                                                 <tr>
-                                                    <td>{{ $user->firstname }}
-                                                    </td>
+                                                    <td>{{$pupil->usercode }}</td>
+                                                    <td>{{ $pupil->firstname }}</td>
+                                                    <td>{{ $pupil->lastname }}</td>
                                                     <td>
-                                                        {{ $user->lastname }}
-                                                    </td>
-                                                    <td>
-
-                                                        {{$user->usercode}}
-                                                    </td>
-
-
-                                                    <td>{{ $user->phoneNumber }}</td>
-                                                    <td>
-                                                      {{$user->marks}}
                                                         
-                                                         
+                                                        <span class="badge badge-info"> {{ $pupil->marks  }} %</span>
+
                                                     </td>
-
-
+                                                    <td>
+                                                        {{$pupil->comment}}
+                                                    </td>
+                                                    <td>
+                                                        <a href="/reports/assignments/{{$pupil->assignment_id}}/{{$pupil->id}}">Add Comment</a>
+                                                    </td>
+                                                    
                                                 </tr>
                                             @endforeach
                                             <!--create a tr--->
@@ -236,13 +119,6 @@
 
                                 <!--table removed-->
                 </div>
-
-                     
-
-
-
-
-
 
                     </div><!-- /.container-fluid -->
             </section>
